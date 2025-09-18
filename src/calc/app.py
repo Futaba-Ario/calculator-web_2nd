@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from .ui import launch
+from calc.ui import launch
 
 
 def main() -> None:
