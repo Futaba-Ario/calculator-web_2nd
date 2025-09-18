@@ -14,8 +14,6 @@ Python 3.12 以降と Tkinter で構築したデスクトップ電卓アプリ�
 ## スクリーンショット
 ![アプリ画面](docs/screenshot.png)
 
-⇒ `Win + Shift + S` で撮影し、`docs/screenshot.png` に保存してください。
-
 ## キーボード操作
 | キー | 動作 |
 | ---- | ---- |
