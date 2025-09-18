@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e .[dev]
+      - name: Ruff
+        run: ruff check src tests
+      - name: Black
+        run: black --check src tests
+      - name: Pytest
+        run: pytest -q
+
+  build-windows:
+    needs: tests
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e .[dev]
+      - name: Build executable
+        run: pyinstaller --onefile --windowed --name Calculator src/calc/app.py
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Calculator-${{ github.ref_name }}-windows
+          path: dist/Calculator.exe
